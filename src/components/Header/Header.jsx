@@ -38,19 +38,19 @@ const Header = () => {
         <nav className="flex items-center flex-1 justify-end">
           <ul className="sm:flex space-x-6 font-semibold hidden mr-6">
             <li>
-              <Link to="#">About Us</Link>
+              <Link to="/">About Us</Link>
             </li>
             <li>
-              <Link to="#">Pricing</Link>
+              <Link to="/">Pricing</Link>
             </li>
             <li>
-              <Link to="#">Features</Link>
+              <Link to="/">Features</Link>
             </li>
             <li>
-              <Link to="#">New Project</Link>
+              <Link to="/">New Project</Link>
             </li>
             <li>
-              <Link to="#">Blog</Link>
+              <Link to="/">Blog</Link>
             </li>
           </ul>
 
@@ -62,19 +62,19 @@ const Header = () => {
             }
           >
             <li>
-              <Link to="#">About Us</Link>
+              <Link to="/">About Us</Link>
             </li>
             <li>
-              <Link to="#">Pricing</Link>
+              <Link to="/">Pricing</Link>
             </li>
             <li>
-              <Link to="#">Features</Link>
+              <Link to="/">Features</Link>
             </li>
             <li>
-              <Link to="#">New Project</Link>
+              <Link to="/">New Project</Link>
             </li>
             <li>
-              <Link to="#">Blog</Link>
+              <Link to="/">Blog</Link>
             </li>
           </ul>
 

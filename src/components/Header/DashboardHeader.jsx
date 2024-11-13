@@ -1,27 +1,36 @@
-import React, { useState } from 'react'
-import {CustomeBtn, Logo, Logout} from "../index"
+import React, { useState } from "react";
+import { CustomeBtn, Logo, Logout } from "../index";
 import { Link } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux"
-import { isDisplay } from '../../redux_slice/toggleSlice';
-import authService from '../../appwrieService/authService';
+import { useSelector, useDispatch } from "react-redux";
+import { isDisplay } from "../../redux_slice/toggleSlice";
+import authService from "../../appwrieService/authService";
 
 const DashboardHeader = () => {
-  const userData = useSelector(state => state.auth.userData);
+  const userData = useSelector((state) => state.auth.userData);
   const dispatch = useDispatch();
+  const [projects, setProjects] = useState([]); // State to store project list
 
-  const handleClick = () =>{
-    dispatch(isDisplay())
-  }
- 
- 
+  const handleClick = () => {
+    dispatch(isDisplay());
+  };
+
+  const handleAddProject = () => {
+    const newProject = {
+      id: projects.length + 1,
+      name: `Project ${projects.length + 1}`,
+      createdBy: userData?.name || "Unknown",
+    };
+    setProjects([...projects, newProject]); // Add new project to the list
+  };
+
   return (
-    <div className=" p-2 bg-gray-700 sticky left-0 top-0 w-full">
+    <div className="p-2 bg-gray-700 sticky left-0 top-0 w-full">
       <div className="flex justify-between px-12">
         <div className="flex items-center text-white">
-          <div className=" mr-6">
+          <div className="mr-6">
             <Logo />
           </div>
-          <div className=" font-bold text-white">
+          <div className="font-bold text-white">
             <h1 className="text-xl flex items-center gap-1">
               <span>
                 <svg
@@ -40,10 +49,13 @@ const DashboardHeader = () => {
             </h1>
           </div>
         </div>
-        <div className=" flex items-center">
+        <div className="flex items-center">
           <div className="mr-4">
             <CustomeBtn
-              onClick={handleClick}
+              onClick={() => {
+                handleClick();
+                handleAddProject(); // Add new project on click
+              }}
               name="New Project"
               icon={
                 <svg
@@ -51,7 +63,7 @@ const DashboardHeader = () => {
                   width="16"
                   height="16"
                   fill="currentColor"
-                  class="bi bi-plus-circle-fill"
+                  className="bi bi-plus-circle-fill"
                   viewBox="0 0 16 16"
                 >
                   <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
@@ -66,6 +78,6 @@ const DashboardHeader = () => {
       </div>
     </div>
   );
-}
+};
 
-export default DashboardHeader
+export default DashboardHeader;

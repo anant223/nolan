@@ -2,33 +2,35 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import dbService from "../appwrieService/dbService";
-import { getData } from "../redux_slice/dbSlice";
 
-const NewProjectModal = ({ onClose }) => {
-  const { register, handleSubmit } = useForm();
+const NewProjectModal = ({ onClose, onProjectCreated }) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset
+  } = useForm();
   const status = useSelector((state) => state.toggle.status);
   const userData = useSelector((state) => state.auth.userData);
-  const dispatch = useDispatch()
+
   const createProject = async (data) => {
     try {
-       const newProject = await dbService.createPost({
-         ...data,
-         userID: userData.userData.$id,
-       });
-    
-       console.log(newProject);
-      if(newProject){
-        dispatch(getData(newProject))
+      const createdProject = await dbService.createPost({
+        ...data,
+        userID: userData?.userData?.$id,
+      });
+      console.log(createdProject);
+      if (createdProject) {
+        onProjectCreated(createdProject)
         alert(`Project created: ${data.title}`);
         onClose();
-        return newProject;
+        reset()
+        
       }
-     
-    }  catch (error) {
+    } catch (error) {
       console.error("Failed to create project:", error);
       alert("Failed to create project. Please try again.");
     }
-
   };
 
   return (
@@ -60,19 +62,25 @@ const NewProjectModal = ({ onClose }) => {
               type="text"
               className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-500"
               placeholder="Untitled Project"
-              {...register("title")}
+              {...register("title", { required: "Title is required" })}
             />
+            {errors.title && (
+              <p className="text-red-500">{errors.title.message}</p>
+            )}
           </div>
           <div className="mb-4">
             <label className="text-gray-700 text-sm font-medium">Type</label>
             <select
               className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-              {...register("type")}
+              {...register("type", { required: "Type is required" })}
             >
               <option value="Feature Film">Feature Film</option>
               <option value="Short Film">Short Film</option>
               <option value="Social Media">Social Media</option>
             </select>
+            {errors.type && (
+              <p className="text-red-500">{errors.type.message}</p>
+            )}
           </div>
           <div className="mb-6">
             <label className="text-gray-700 text-sm font-medium">
@@ -82,8 +90,11 @@ const NewProjectModal = ({ onClose }) => {
               className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
               placeholder="Description"
               rows="3"
-              {...register("desc")}
+              {...register("desc", { required: "Description is required" })}
             />
+            {errors.desc && (
+              <p className="text-red-500">{errors.desc.message}</p>
+            )}
           </div>
           <div className="flex justify-end">
             <button

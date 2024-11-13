@@ -8,7 +8,6 @@ import Logout from "./Header/Logout";
 import DashboardHeader from "./Header/DashboardHeader";
 import Card from "./social/Card";
 import Loading from "./Loading";
-import AuthLayout from "./AuthLayout"
 
 export {
     Header,
@@ -21,5 +20,4 @@ export {
     DashboardHeader,
     Card,
     Loading,
-    AuthLayout
 }

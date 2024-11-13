@@ -14,22 +14,22 @@ const Auth = () => {
 
   const handleAuthSession = async (data) =>{
     try {
-      let user;
       if(!state){
         const loggedInUser = await authService.login(data);
         if (loggedInUser) {
-          user = await authService.getCurrentUser();
-          console.log(user);
+          const user = await authService.getCurrentUser();
+          if(user) {
+              dispatch(login(user));
+              navigate("/dashboard");
+          }
         }
       }else{
-        const newUser = await authService.createAccount(data);
-        if(newUser){
-          user = await authService.getCurrentUser();
-        }     
-      }
-      if(user){
-        dispatch(login(user))
-        navigate("/dashboard");
+        const userData = await authService.createAccount(data);
+        if (userData) {
+          const user = await authService.getCurrentUser();
+          if (user)  dispatch(login(user));
+          navigate("/dashboard");
+        }
       }
     } catch (error) {
       console.error("Authentication error:", error.message);
@@ -72,7 +72,7 @@ const Auth = () => {
           <button className='bg-gray-700 py-4 px-6 rounded w-full'>{!state ? "Login" : "Sign Up"}</button>
         </div>
         <div className=" p-2 text-justify">
-          {!state ? "Don't have an account : -" : "Already have an account"} <Link onClick={signupORLogin} className=' border-b hover:text-gray-400' >{!state ? "Register Here" : "Login Here"}</Link>
+          {!state ? "Don't have an account : -" : "Already have an account"} <button onClick={signupORLogin} className=' border-b hover:text-gray-400' type='submit'>{!state ? "Register Here" : "Login Here"}</button>
         </div>
       </form>
     </div>

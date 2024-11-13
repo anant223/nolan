@@ -1,45 +1,63 @@
-import React, { useEffect, useState } from 'react'
-import { Card, FeatureCard, Loading, NewProjectModal } from '../components/index.js';
-import { useDispatch, useSelector } from 'react-redux';
-import { isDisplay } from '../redux_slice/toggleSlice.js';
-import dbService from '../appwrieService/dbService.js';
-import { getData } from '../redux_slice/dbSlice.js';
+import React, { useCallback, useEffect, useState } from "react";
+import {
+  Card,
+  FeatureCard,
+  Loading,
+  NewProjectModal,
+} from "../components/index.js";
+import { useDispatch, useSelector } from "react-redux";
+import { isDisplay } from "../redux_slice/toggleSlice.js";
+import dbService from "../appwrieService/dbService.js";
 
 const Dashboard = () => {
-   const dispatch = useDispatch();
-   const authData = useSelector(state => state.auth.userData)
-   const projectData = useSelector(state => state.project.data)
-   const handleClick = () => {
-     dispatch(isDisplay());
-   };
+  const dispatch = useDispatch();
+  const authData = useSelector((state) => state.auth.userData);
+  const [loading, setLoading] = useState(true);
+  const [projects, setProjects] = useState([])
 
-   useEffect(() => {
-     if (!authData) return; 
 
-     const projectPreview = async () => {
-       try {
-         const project = await dbService.getPosts(authData.userData.$id);
-         if (project) {
-           dispatch(getData(project.documents));
-         }
-       } catch (error) {
-         console.error("Failed to fetch posts", error);
-       }
-     };
+  const handleClick = () => {
+    dispatch(isDisplay());
+  };
 
-     projectPreview();
-   }, [authData]);
+  
 
- 
-  return !authData ? <Loading/> :
+  useEffect(() => {
+    const fetchProjects = async () => {
+      if (!authData) return;
+
+      try {
+        const project = await dbService.getPosts(authData.userData.$id);
+        console.log(project);
+        if (project) {
+          setProjects(project.documents);
+        }
+      } catch (error) {
+        console.error("Failed to fetch posts", error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjects()
+  }, [authData]);
+
+
+  const addNewProject = (newProject) => {
+    setProjects((prevProjects) => [...prevProjects, newProject]);
+  };
+
+  if (loading) return <Loading />;
+
+  return (
     <main>
-      <div className="flex w-full flex-wrap">
+      <div className="flex w-full overflow-hidden">
         <div className="bg-gray-700 flex fixed z-30">
-          <div className=" border-r-2 border-gray-300 overflow-y-scroll h-screen">
-            <div className=" flex items-center gap-2 flex-col w-14 py-2 relative"></div>
+          <div className="border-r-2 border-gray-300 overflow-y-scroll h-screen">
+            <div className="flex items-center gap-2 flex-col w-14 py-2 relative"></div>
           </div>
         </div>
-        <div className="bg-gray-600 ml-14  w-full text-white   flex p-6 space-x-2 h-full">
+        <div className="bg-gray-600 ml-14 w-full text-white flex p-6 space-x-2 h-full">
           <div className="w-full">
             <Card
               title="Leave Feedback"
@@ -77,17 +95,23 @@ const Dashboard = () => {
             />
           </div>
         </div>
-
       </div>
-      <div className=' ml-20 mt-6 flex flex-wrap gap-4 w-full h-auto'>
-        {projectData?.map(project => <FeatureCard key={project.$id} {...project}/>)}
+      <div className="ml-20 mt-6 flex flex-wrap gap-4 w-full h-auto">
+        {projects.length > 0 ? (
+          projects.map((project, i) => (
+            <FeatureCard key={i} {...project}  />
+          ))
+        ) : (
+          <div className="flex flex-col justify-center h-[50vh] items-center w-full">
+            <p className="text-2xl text-gray-400 font-bold">
+              No projects found. Create a new project to get started!
+            </p>
+          </div>
+        )}
       </div>
-      <div>
-        <NewProjectModal
-          onClose={handleClick}
-        />
-      </div>
+      <NewProjectModal onClose={handleClick} onProjectCreated={addNewProject} />
     </main>
-}
+  );
+};
 
-export default Dashboard
+export default Dashboard;

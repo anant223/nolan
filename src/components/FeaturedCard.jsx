@@ -4,7 +4,7 @@ import {Link} from "react-router-dom"
 const FeatureCard = ({type, title, desc, $id }) => {
   return (
     <Link to={`/dashboard/${$id}`}>
-      <div className="max-w-xs p-4 bg-gray-100 rounded-lg shadow-md">
+      <div className="max-w-xs p-4 bg-gray-100 rounded-lg shadow-md sm:w-72 md:w-80 lg:w-96">
         <div className="flex items-center space-x-2 text-gray-600">
           <span className="text-xs font-medium">🎬</span>
           <span className="text-xs font-semibold uppercase">{type}</span>

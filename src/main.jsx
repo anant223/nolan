@@ -10,8 +10,7 @@ import AuthPage from './pages/AuthPage.jsx'
 import Home from "./pages/Home.jsx"
 import Dashboard from './pages/Dashboard.jsx'
 import ProjectDetail from './pages/ProjectDetail.jsx'
-import { AuthLayout } from './components/index.js'
-
+import AuthValidation from './components/AuthValidation.jsx'
 const AppRouter = createBrowserRouter([
   {
     path: "/",
@@ -19,32 +18,42 @@ const AppRouter = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home />,
+        element: (
+          <AuthValidation>
+            <Home />
+          </AuthValidation>
+        ),
       },
       {
         path: "/auth",
         element: (
-          <AuthLayout authentication={false}>
+          <AuthValidation authentication={false}>
             <AuthPage />
-          </AuthLayout>
+          </AuthValidation>
         ),
       },
       {
         path: "/dashboard",
         element: (
+          <AuthValidation>
             <Dashboard />
+          </AuthValidation>
         ),
       },
       {
         path: "/dashboard/:id",
         element: (
+          <AuthValidation>
             <ProjectDetail />
+          </AuthValidation>
         ),
       },
       {
         path: "/dashboard/:id/result",
         element: (
+          <AuthValidation>
             <Content />
+          </AuthValidation>
         ),
       },
     ],
