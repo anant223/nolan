@@ -2,7 +2,6 @@ import OpenAI from "openai";
 import config from "../config/config";
 const openai = new OpenAI({
   apiKey: config.openApiKey,
-  dangerouslyAllowBrowser: true,
 });
 
 const createChatContent = async ({title, type}) =>{
